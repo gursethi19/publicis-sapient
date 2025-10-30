@@ -11,4 +11,5 @@ public class UserDTO {
     private Integer age;
     private String phone;
     private String ssn;
+    private String role;
 }
