@@ -1,21 +1,56 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 const SearchBar = ({ onSearch, onClear, setHasSearched }) => {
   const [query, setQuery] = useState("");
+  const debounceRef = useRef(null);
+
+  const trimmed = query.trim();
+  const isNumeric = /^\d+$/.test(trimmed);
+  const isEmailLike = trimmed.includes("@");
+  const isLongText = !isNumeric && !isEmailLike && trimmed.length >= 3;
+  const canSearch = isNumeric || isEmailLike || isLongText;
+
   const handleChange = (e) => {
-    setQuery(e.target.value);
-    if (e.target.value.length < 3) {
+    const val = e.target.value;
+    setQuery(val);
+    if (val.trim().length < 3) {
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current);
+        debounceRef.current = null;
+      }
       onClear();
       setHasSearched(false);
     }
   };
+
+  useEffect(() => {
+    if (isEmailLike || (trimmed.length >= 3 && !isNumeric)) {
+      debounceRef.current = setTimeout(() => {
+        onSearch(trimmed);
+        setHasSearched(true);
+        debounceRef.current = null;
+      }, 400);
+    }
+
+    return () => {
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current);
+        debounceRef.current = null;
+      }
+    };
+  }, [trimmed]);
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (query.length >= 3) {
-      onSearch(query);
+    if (canSearch) {
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current);
+        debounceRef.current = null;
+      }
+      onSearch(trimmed);
       setHasSearched(true);
     } else {
-      alert("Enter at least 3 characters to search");
+      alert("Enter at least 3 characters to search (or enter an ID/email)");
     }
   };
 
@@ -28,7 +63,7 @@ const SearchBar = ({ onSearch, onClear, setHasSearched }) => {
         value={query}
         onChange={handleChange}
       />
-      <button className="google-btn" type="submit" disabled={query.length < 3}>
+      <button className="google-btn" type="submit" disabled={!canSearch}>
         Search
       </button>
     </form>

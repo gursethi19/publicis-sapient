@@ -15,9 +15,6 @@ const App = () => {
     const loadUsers = async () => {
       try {
         await axios.post("http://localhost:8080/api/users/load");
-        // Optionally fetch all users if endpoint is available:
-        // const res = await axios.get("http://localhost:8080/api/users");
-        // setUsers(Array.isArray(res.data) ? res.data : []);
       } catch (error) {
         setUsers([]);
       }
@@ -27,19 +24,27 @@ const App = () => {
 
   const searchUsers = async (query) => {
     try {
-      const res = await axios.get(
-        `http://localhost:8080/api/users/search?query=${query}`
-      );
-      setUsers(Array.isArray(res.data) ? res.data : []);
+      if (query.includes("@")) {
+        const res = await axios.get(
+          `http://localhost:8080/api/users/email/${query}`
+        );
+        setUsers(res.data ? [res.data] : []);
+      } else if (/^\d+$/.test(query)) {
+        const res = await axios.get(`http://localhost:8080/api/users/${query}`);
+        setUsers(res.data ? [res.data] : []);
+      } else {
+        const res = await axios.get(
+          `http://localhost:8080/api/users/search?query=${query}`
+        );
+        setUsers(Array.isArray(res.data) ? res.data : []);
+      }
     } catch (error) {
       setUsers([]);
     }
   };
 
-  // Extract unique roles from users array
   const roles = Array.from(new Set(users.map((u) => u.role).filter(Boolean)));
 
-  // Filter users by selected role
   const filteredUsers = selectedRole
     ? users.filter((u) => u.role === selectedRole)
     : users;

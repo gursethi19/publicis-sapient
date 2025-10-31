@@ -3,7 +3,6 @@ import React, { useState } from "react";
 const UserGrid = ({ users, hasSearched }) => {
   const [sortOrder, setSortOrder] = useState("asc");
 
-  // Clone and sort users by age
   const sortedUsers = [...users].sort((a, b) => {
     if (sortOrder === "asc") return a.age - b.age;
     else return b.age - a.age;

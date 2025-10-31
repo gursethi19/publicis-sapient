@@ -4,10 +4,10 @@ body {
   background: linear-gradient(
     120deg,
     #ffdee9,
-    /* soft pink */ #b5fffc,
-    /* soft blue-turquoise */ #fff1ba,
-    /* soft yellow */ #a0e7e5,
-    /* mint aqua */ #c7ceea /* light pastel purple-blue */
+    #b5fffc,
+    #fff1ba,
+    #a0e7e5,
+    #c7ceea
   );
   background-size: 400% 400%;
   animation: gradientBG 18s ease infinite;
@@ -44,7 +44,6 @@ h2 {
   opacity: 0.92;
 }
 
-/* Search bar like Google */
 .google-search-bar {
   display: flex;
   align-items: center;
@@ -135,7 +134,6 @@ select.form-select {
   transition: border 0.2s;
 }
 
-/* Responsive */
 @media (max-width: 700px) {
   .container {
     max-width: 98vw;
