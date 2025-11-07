@@ -12,9 +12,6 @@ const UserGrid = ({ users, hasSearched }) => {
     setSortOrder(sortOrder === "asc" ? "desc" : "asc");
   };
 
-  if (hasSearched && (!Array.isArray(users) || users.length === 0)) {
-    return <div>No users found</div>;
-  }
   if (!Array.isArray(users) || users.length === 0) {
     return null;
   }
@@ -32,7 +29,7 @@ const UserGrid = ({ users, hasSearched }) => {
             title="Sort by Age"
           >
             Age&nbsp;
-            {sortOrder === "asc" ? "▲" : "▼"}
+            {sortOrder === "asc" ? "\u25b2" : "\u25bc"}
           </th>
           <th>Role</th>
         </tr>

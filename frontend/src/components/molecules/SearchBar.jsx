@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
+import Input from "../atoms/Input";
+import Button from "../atoms/Button";
 
-const SearchBar = ({ onSearch, onClear, setHasSearched }) => {
+const SearchBar = ({ onSearch, onClear, setHasSearched, onError }) => {
   const [query, setQuery] = useState("");
   const debounceRef = useRef(null);
 
@@ -26,6 +28,7 @@ const SearchBar = ({ onSearch, onClear, setHasSearched }) => {
   useEffect(() => {
     if (isEmailLike || (trimmed.length >= 3 && !isNumeric)) {
       debounceRef.current = setTimeout(() => {
+        onError && onError("");
         onSearch(trimmed);
         setHasSearched(true);
         debounceRef.current = null;
@@ -47,25 +50,26 @@ const SearchBar = ({ onSearch, onClear, setHasSearched }) => {
         clearTimeout(debounceRef.current);
         debounceRef.current = null;
       }
+      onError && onError("");
       onSearch(trimmed);
       setHasSearched(true);
     } else {
-      alert("Enter at least 3 characters to search (or enter an ID/email)");
+      onError &&
+        onError("Enter at least 3 characters to search (or enter an ID/email)");
     }
   };
 
   return (
     <form className="google-search-bar" onSubmit={handleSubmit}>
-      <input
-        type="text"
+      <Input
         className="google-input"
         placeholder="Search users here..."
         value={query}
         onChange={handleChange}
       />
-      <button className="google-btn" type="submit" disabled={!canSearch}>
+      <Button className="google-btn" type="submit" disabled={!canSearch}>
         Search
-      </button>
+      </Button>
     </form>
   );
 };

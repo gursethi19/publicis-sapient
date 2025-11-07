@@ -1,20 +1,14 @@
 import React from "react";
+import Select from "../atoms/Select";
 
 const FilterBar = ({ roles, selectedRole, onRoleChange }) => {
   return (
-    <select
+    <Select
       className="form-select"
       value={selectedRole}
       onChange={(e) => onRoleChange(e.target.value)}
-    >
-      <option value="">All Roles</option>
-      {Array.isArray(roles) &&
-        roles.map((role) => (
-          <option key={role} value={role}>
-            {role}
-          </option>
-        ))}
-    </select>
+      options={roles}
+    />
   );
 };
 
